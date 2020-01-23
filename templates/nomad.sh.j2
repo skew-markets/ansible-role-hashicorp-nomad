@@ -4,6 +4,7 @@
 export PATH="{{hashicorp_dir_bin}}:${PATH}"
 export NOMAD_ADDR=http://{{local_ipv4}}:{{nomad_port}}
 
+alias ngc='curl -X PUT http://localhost:4646/v1/system/gc'
 alias njd='nomad job deployments'
 alias njp='nomad job plan'
 alias njr='nomad job run'
