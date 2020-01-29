@@ -85,10 +85,11 @@
   tags:
   - ct-nomad
 
-- name: 'config file'
+- name: '{{nomad_role}} config file'
   template:
     src: '{{nomad_role}}.hcl.j2'
     dest: '{{nomad_etc_dir}}/{{nomad_role}}.hcl'
+    backup: true
     owner: root
     group: root
     mode: '0600'
