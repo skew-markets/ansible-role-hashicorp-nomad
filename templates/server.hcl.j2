@@ -8,17 +8,23 @@ server {
   bootstrap_expect = 3
   enabled          = true
 }
-{% if nomad_vault_token is defined %}
 
+{% if nomad_vault_active is defined and nomad_vault_active %}
+{% if nomad_vault_token is defined %}
 vault {
-  address          = "https://{{vault_address}}"
+  address          = "{{nomad_vault_scheme}}://{{nomad_vault_addr}}"
   create_from_role = "{{nomad_vault_role}}"
   enabled          = true
   token            = "{{nomad_vault_token}}"
 }
+{% else %}
+# nomad_vault_token not defined
 {% endif %}
-{% if nomad_publish_to_datadog is defined and nomad_publish_to_datadog %}
+{% else %}
+# nomad_vault_active either undefined or false
+{% endif %}
 
+{% if nomad_publish_to_datadog is defined and nomad_publish_to_datadog %}
 telemetry {
   publish_allocation_metrics = true
   publish_node_metrics       = true
@@ -26,6 +32,8 @@ telemetry {
   disable_hostname           = true
   collection_interval        = "10s"
 }
+{% else %}
+# nomad_publish_to_datadog either undefined or false
 {% endif %}
 
 # end
