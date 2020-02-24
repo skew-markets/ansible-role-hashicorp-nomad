@@ -93,8 +93,8 @@
     backup: true
     owner: root
     group: root
-    mode: '0600'
-  notify: handler_restart_nomad
+    mode: '0644'
+  notify: handler_reload_nomad
   no_log: true
   become: true
   tags:
