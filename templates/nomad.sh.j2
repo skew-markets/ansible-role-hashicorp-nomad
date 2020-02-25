@@ -1,10 +1,10 @@
 # MANAGED_BY_ANSIBLE
-# bash include for Nomad on {{inventory_hostname}}
+# bash include for Nomad
 
 export PATH="{{hashicorp_dir_bin}}:${PATH}"
 export NOMAD_ADDR=http://{{local_ipv4}}:{{nomad_port}}
 
-alias ngc='curl -X PUT http://localhost:4646/v1/system/gc'
+alias ngc='curl -X PUT http://{{local_ipv4}}:{{nomad_port}}/v1/system/gc'
 alias njd='nomad job deployments'
 alias njp='nomad job plan'
 alias njr='nomad job run'
