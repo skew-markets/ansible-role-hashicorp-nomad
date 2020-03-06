@@ -1,4 +1,5 @@
 ---
+nomad_allow_raw_exec: false
 nomad_etc_dir: /etc/nomad
 nomad_format: zip
 nomad_lib_dir: /var/lib/nomad
