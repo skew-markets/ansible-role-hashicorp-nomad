@@ -5,7 +5,7 @@ datacenter = "{{consul_datacentre}}"
 client {
   enabled          = true
   servers          = [
-  {% for ip in nomad_servers %}
+{% for ip in nomad_servers %}
     "{{ip}}:4647"{{ "," if not loop.last else "" }}
 {% endfor %}
   ]
