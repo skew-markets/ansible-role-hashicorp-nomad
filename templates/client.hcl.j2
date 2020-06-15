@@ -9,10 +9,14 @@ client {
     "{{ip}}:4647"{{ "," if not loop.last else "" }}
 {% endfor %}
   ]
+{% if hostvars[inventory_hostname]['datadog'] is defined %}
 
   meta {
-    "function" = "{{nomad_function}}"
+{% for key, value in hostvars[inventory_hostname]['datadog'].items() %}
+    "{{key}}" = "{{value}}"
+{% endfor %}
   }
+{% endif %}
 }
 
 {% if nomad_vault_active %}
