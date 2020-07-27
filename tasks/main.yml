@@ -112,6 +112,28 @@
   tags:
   - ct-nomad
 
+- name: 'see if Datadog is installed (cm=f)'
+  stat:
+    path: /etc/datadog-agent
+  check_mode: false
+  register: doggy
+  tags:
+  - ct-nomad
+  - ct-nomad-datadog
+
+- name: 'render Datadog config file for Systemd'
+  template:
+    src: datadog-systemd-conf.yaml.j2
+    dest: /etc/datadog-agent/conf.d/systemd.d/conf.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  when: doggy.stat.isdir is defined and doggy.stat.isdir
+  become: true
+  tags:
+  - ct-nomad
+  - ct-nomad-datadog
+
 - name: 'nomad-{{nomad_role}} service to {{nomad_state}}'
   systemd:
     name: nomad-{{nomad_role}}
