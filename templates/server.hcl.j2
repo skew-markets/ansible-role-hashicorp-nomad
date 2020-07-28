@@ -24,7 +24,11 @@ vault {
 # nomad_vault_active either undefined or false
 {% endif %}
 
-{% if nomad_publish_to_datadog is defined and nomad_publish_to_datadog %}
+{% if nomad_publish_to_datadog is not defined %}
+# nomad_publish_to_datadog is undefined
+{% elif not nomad_publish_to_datadog %}
+# nomad_publish_to_datadog is false
+{% else %}
 telemetry {
   publish_allocation_metrics = true
   publish_node_metrics       = true
@@ -32,8 +36,5 @@ telemetry {
   disable_hostname           = true
   collection_interval        = "10s"
 }
-{% else %}
-# nomad_publish_to_datadog either undefined or false
 {% endif %}
-
 # end
