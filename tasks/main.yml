@@ -2,12 +2,11 @@
 
 - name: 'download Nomad archive'
   get_url:
-    url: '{{hashicorp_repo}}/nomad/{{nomad_version}}/{{nomad_target}}'
-    dest: '{{hashicorp_dir_staging}}'
+    dest: '{{hashicorp_dir_staging}}/{{nomad_target}}'
     timeout: '{{hashicorp_internet_timeout}}'
+    url: '{{hashicorp_repo}}/nomad/{{nomad_version}}/{{nomad_target}}'
     validate_certs: false
-  tags:
-  - ct-nomad
+  tags: [ct-nomad]
 
 - name: 'expand archive'
   unarchive:
@@ -16,8 +15,7 @@
     copy: false
   become: true
   ignore_errors: '{{ansible_check_mode}}'
-  tags:
-  - ct-nomad
+  tags: [ct-nomad]
 
 - name: 'create CNI directories'
   file:
@@ -28,9 +26,7 @@
     mode: '0775'
   loop: '{{nomad_cni_dirs}}'
   become: true
-  tags:
-  - ct-nomad
-  - ct-nomad-cni
+  tags: [ct-nomad, ct-nomad-cni]
 
 - name: 'download CNI archive'
   get_url:
@@ -40,9 +36,7 @@
     validate_certs: false
   ignore_errors: '{{ansible_check_mode}}'  # TODO would be good to check the message too
   become: true
-  tags:
-  - ct-nomad
-  - ct-nomad-cni
+  tags: [ct-nomad, ct-nomad-cni]
 
 - name: 'expand CNI archive'
   unarchive:
@@ -50,8 +44,7 @@
     dest: '{{nomad_cni_base}}/bin'
     copy: false
   become: true
-  tags:
-  - ct-nomad
+  tags: [ct-nomad]
 
 - name: 'system account'
   user:
@@ -60,8 +53,7 @@
     system: true
     state: present
   become: true
-  tags:
-  - ct-nomad
+  tags: [ct-nomad]
 
 - name: 'bash include'
   template:
@@ -71,8 +63,7 @@
     group: root
     mode: 0644
   become: true
-  tags:
-  - ct-nomad
+  tags: [ct-nomad]
 
 - name: 'directories'
   file:
@@ -83,8 +74,7 @@
     mode: '0755'
   loop: '{{nomad_dirs}}'
   become: true
-  tags:
-  - ct-nomad
+  tags: [ct-nomad]
 
 - name: '{{nomad_role}} config file'
   template:
@@ -97,8 +87,7 @@
   notify: handler_reload_nomad
   no_log: true
   become: true
-  tags:
-  - ct-nomad
+  tags: [ct-nomad]
 
 - name: 'systemd unit file'
   template:
@@ -109,17 +98,14 @@
     mode: '0644'
   register: reg_service
   become: true
-  tags:
-  - ct-nomad
+  tags: [ct-nomad]
 
 - name: 'see if Datadog is installed (cm=f)'
   stat:
     path: /etc/datadog-agent
   check_mode: false
   register: doggy
-  tags:
-  - ct-nomad
-  - ct-nomad-datadog
+  tags: [ct-nomad, ct-nomad-datadog]
 
 - name: 'render Datadog config file for Systemd'
   template:
@@ -130,9 +116,7 @@
     mode: '0644'
   when: doggy.stat.isdir is defined and doggy.stat.isdir
   become: true
-  tags:
-  - ct-nomad
-  - ct-nomad-datadog
+  tags: [ct-nomad, ct-nomad-datadog]
 
 - name: 'nomad-{{nomad_role}} service to {{nomad_state}}'
   systemd:
@@ -141,8 +125,7 @@
     enabled: true
     daemon_reload: '{{reg_service is changed}}'
   become: true
-  tags:
-  - ct-nomad
+  tags: [ct-nomad]
 
 # --------------------------------
 ...
